@@ -18,9 +18,8 @@ class LearningAgent(Agent):
         # Set parameters of the learning agent
         self.learning = True	 # Whether the agent is expected to learn
         self.Q = dict()          # Create a Q-table which will be a dictionary of tuples
-        self.epsilon = epsilon   # Random exploration factor
-        self.alpha = alpha  # Learning factor
-        self.epsilon = epsilon
+        self.epsilon = 1.0   # Random exploration factor
+        self.alpha = 0.8  # Learning factor
 
         #self.epsilon_decay_rate = decay_rate
         self.optimized = True

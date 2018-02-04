@@ -16423,27 +16423,28 @@ I am satisfied with the rating of A+ for safety and reliability, which is the hi
 <p><strong>Answer:</strong><br></p>
 <ol>
 <li><p><strong>The optimal policy for the smartcab is:</strong><br></p>
-<p><strong><em>Move to the direction of the waypoint unless:</em></strong></p>
+<p><strong><em>Move to the direction of the waypoint if:</em></strong></p>
 <ul>
-<li>the light is red and:<ul>
-<li>the waypoint is forward or </li>
-<li>the waypoint is left</li>
+<li><p>if the waypoint is forward:</p>
+<ul>
+<li>if the light is green then move forward</li>
+<li>if the light is red then do not move</li>
 </ul>
 </li>
-<li>the light is red and:<ul>
-<li>the waypoint is right and:<ul>
-<li>the car on the left is moving forward or</li>
-<li>oncoming traffic is turning left </li>
+<li><p>if the waypoint is left:</p>
+<ul>
+<li>if the light is green and oncoming traffic is not moving forward, then go left</li>
+<li>if the light is green and oncoming traffic is moving forward, then do not go</li>
+<li>if the light is red then do not move</li>
+</ul>
+</li>
+<li><p>if the waypoint is right:</p>
+<ul>
+<li>if the light is green then go right</li>
+<li>if the light is red and the car to the left is not moving forward then go right</li>
 </ul>
 </li>
 </ul>
-</li>
-<li>the light is green and:<ul>
-<li>the waypoint is left and oncoming traffic is moving forward</li>
-</ul>
-</li>
-</ul>
-<p><strong><em>If any of the above conditions is true, then do not move</em></strong><br></p>
 </li>
 </ol>
 <p>Basically, do not violate the rules of the road as defined by the local law, avoid colliding with the other cars and do not cause accidents.<br></p>

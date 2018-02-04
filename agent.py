@@ -8,7 +8,7 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.5, decay_rate=0.005):
+    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.8, decay_rate=0.005):
 
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
@@ -16,11 +16,11 @@ class LearningAgent(Agent):
 
 
         # Set parameters of the learning agent
-        self.learning = learning	 # Whether the agent is expected to learn
+        self.learning = True	 # Whether the agent is expected to learn
         self.Q = dict()          # Create a Q-table which will be a dictionary of tuples
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha  # Learning factor
-        self.epsilon = 1.0
+        self.epsilon = epsilon
 
         #self.epsilon_decay_rate = decay_rate
         self.optimized = True
@@ -31,7 +31,7 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-
+        self.reset_count = 0
 
 
 
@@ -50,13 +50,20 @@ class LearningAgent(Agent):
 
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
+        import math
+
+        self.reset_count = self.reset_count + 1
+
         if testing == True:
         	self.epsilon = 0
         	self.alpha = 0
-        	print("reset, testing, self.epsilon = ",self.epsilon)
         else:
-        	self.epsilon -= 0.005 #self.epsilon_decay_rate
-        	print("reset, not testing, self.epsilon = ",self.epsilon)
+            #decay function: begin with a higher learning rate and decrease it over the course of training trials
+            #Beginning with a higher learning rate will attribute more weight to new results
+            #and steadily lower it to a relatively small number, allowing the cab to gradually switch to
+            #an exploitation of the Q-table and policies
+            self.alpha = math.e**(-.001 * self.reset_count)
+            self.epsilon = math.e**(-.01 * self.reset_count) 
 
         return None
 
@@ -166,7 +173,6 @@ class LearningAgent(Agent):
 
        	if self.learning == False:
         	action = random.choice(self.valid_actions)
-        	print("choose_action, if learning = True")
         elif self.epsilon > random.random():
         	action = random.choice(self.valid_actions)
         else:
@@ -202,16 +208,13 @@ class LearningAgent(Agent):
             state, choose an action, receive a reward, and learn if enabled. """
 
         state = self.build_state()          # Get current state
-        print("state = ", state)
-
+  
         self.createQ(state)                 # Create 'state' in Q-table
 
         action = self.choose_action(state)  # Choose an action
-        print("update, action = ",action)
 
         reward = self.env.act(self, action) # Receive a reward
-        print("update, reward = ",reward)
-
+ 
         self.learn(state, action, reward)   # Q-learn
 
         return
@@ -257,7 +260,7 @@ def run():
     sim = Simulator(env, update_delay = 0.01, log_metrics=True, optimized=True,display=False)
     sim.update_delay = 0.01
     sim.log_metrics = True
-    sim.n_test = 20
+    sim.n_test = 10
     sim.display = False
     sim.n_test = 10
     sim.learning = True
@@ -278,8 +281,10 @@ def run():
     #   n_test     - discrete number of testing trials to perform, default is 0
     sim.tolerance = 0.05
     sim.optimized=True
+ 
 
     sim.run(n_test = 40)
+    #sim.run(n_test = 10)
 
 
 if __name__ == '__main__':

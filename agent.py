@@ -109,10 +109,6 @@ class LearningAgent(Agent):
 
         maxQ = None
 
-        #possible_actions = self.Q[state]
-
-        #maxQ = max(possible_actions.items(), key=lambda x: x[1])[1]
-
         if state in self.Q:
         	key, value = max(self.Q[state].iteritems(), key=lambda x:x[1])
         	maxQ = key
@@ -136,7 +132,6 @@ class LearningAgent(Agent):
         #self.epsilon = self.epsilon - 0.05
 
         if self.learning == True:
-        	print("createQ, self.learning")
          	if not self.Q.has_key(state):
          		dict_state = {}
          		for action in self.valid_actions:
@@ -176,16 +171,26 @@ class LearningAgent(Agent):
 
         if not self.learning:
             action = random.choice(self.valid_actions)
-        else:
-            if self.epsilon > random.random():
+        elif self.epsilon > random.random():
                 action = random.choice(self.valid_actions)
+        else:
+            #action = self.get_maxQ(state)             
+            #best_actions = []
+            #for a in self.Q[state]:
+            #    if action == self.Q[state][a]:
+            #        best_actions.append(action)
+            #if len(best_actions) > 0:
+            #    action = random.choice(best_actions)
+            best_actions = []
+            maxQ = self.get_maxQ(state)
+            for a in self.Q[state]:
+                if maxQ == self.Q[state][a]:
+                    best_actions.append(a)
+
+            if len(best_actions) > 0:
+                action = random.choice(best_actions)
             else:
-                maxQ = self.get_maxQ(state)
-                actions = [maxQ]
-                for act in self.Q[state]:
-                    if maxQ == self.Q[state][act]:
-                        actions.append(act)
-                action = random.choice(actions)
+                action = maxQ
 
 
         return action
